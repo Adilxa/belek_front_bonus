@@ -2,7 +2,7 @@
 import useAuth from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Phone, ArrowLeft } from "lucide-react";
 
 const VerificationForm = () => {
@@ -21,7 +21,7 @@ const VerificationForm = () => {
             router.push('/profile');
         },
         onError: (error) => {
-            setError('Неверный код. Попробуйте еще раз.');
+            setError(`${error}`);
             // Очищаем поля при ошибке
             setOtp(['', '', '', '', '', '']);
             inputRefs.current[0]?.focus();
@@ -120,7 +120,6 @@ const VerificationForm = () => {
                             {otp.map((digit, index) => (
                                 <input
                                     key={index}
-                                    ref={(el) => inputRefs.current[index] = el}
                                     type="text"
                                     inputMode="numeric"
                                     maxLength={1}

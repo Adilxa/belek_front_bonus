@@ -9,9 +9,9 @@ const useAuth = () => {
         name: name
       })
       return res.data
-    } catch (e: any) {
-      throw e;
-    }
+   } catch (e: unknown) {
+  throw e;
+}
   }
 
   const otpVerify = async (phoneNumber: string, otpCode: string) => {
@@ -28,7 +28,7 @@ const useAuth = () => {
       }
       
       return res
-    } catch (e: any) {
+    } catch (e: unknown) {
       throw e;
     }
   }

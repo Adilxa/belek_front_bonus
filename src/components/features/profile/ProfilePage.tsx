@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { QrCode, History, Gift, Settings, LogOut, Star, Trophy, Zap } from 'lucide-react';
+import { QrCode, History, Gift, Settings, LogOut, Zap } from 'lucide-react';
 import QRModal from './QRModal'; // Импортируйте компонент модалки
 
 export default function ProfilePage() {

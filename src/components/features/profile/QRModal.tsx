@@ -1,6 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface QRModalProps {
@@ -63,7 +64,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
         <div className="flex flex-col items-center space-y-4">
           <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
             {qrCodeUrl ? (
-              <img
+              <Image
                 src={qrCodeUrl}
                 alt="QR Code"
                 className="w-48 h-48"

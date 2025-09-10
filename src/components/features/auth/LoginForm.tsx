@@ -52,7 +52,7 @@ export default function LoginForm() {
       router.push("/verification/?phone=" + formData.phone)
     },
     onError: (error) => {
-      setErrors(prev => ({ ...prev, phone: 'Ошибка сети. Попробуйте позже.' }));
+      setErrors(prev => ({ ...prev, phone: `${error}Ошибка сети. Попробуйте позже.` }));
     }
   });
 
