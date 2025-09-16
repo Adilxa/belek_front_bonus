@@ -12,8 +12,7 @@ interface HistoryModalProps {
 }
 function HistoryModal({ isOpen, onClose, data, refetch }: HistoryModalProps) {
     if (!isOpen) return null;
-    console.log(data)
-
+    console.log("sdsdsdsd")
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden">
@@ -31,7 +30,7 @@ function HistoryModal({ isOpen, onClose, data, refetch }: HistoryModalProps) {
                         <X className="w-6 h-6" />
                     </button>
                 </div>
-
+                
                 {/* Содержимое модалки */}
                 <div className="p-4 overflow-y-auto max-h-[60vh]">
                     {data?.allTransactions && data.allTransactions.length > 0 ? (

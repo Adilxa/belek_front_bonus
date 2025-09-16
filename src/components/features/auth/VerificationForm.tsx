@@ -249,13 +249,6 @@ const VerificationForm = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Helper Text */}
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-500 text-sm">
-                            Проверьте папку "Спам" если код не пришел
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
