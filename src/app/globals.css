@@ -24,4 +24,8 @@ body {
   background: var(--background);
   color: var(--foreground);
  font-family: "TASA Orbiter", sans-serif;
+  height: 100dvh; /* Динамическая высота viewport */
+  min-height: 100vh; /* Fallback для старых браузеров */
+  overflow: hidden;
 }
+

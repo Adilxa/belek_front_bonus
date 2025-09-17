@@ -2,19 +2,38 @@
 import useAuth from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Phone, ArrowLeft, MessageSquare, RefreshCw } from "lucide-react";
 
 const VerificationForm = () => {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [error, setError] = useState('');
     const [resendCooldown, setResendCooldown] = useState(0);
+    const [userName, setUserName] = useState('');
     const params = useSearchParams();
     const router = useRouter();
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    const phoneNumber: string = params.get('phone') || '';
+    const phoneNumber: string = params.get('phone')?.trim() || '';
     const { otpVerify, onLogin } = useAuth();
+
+    // Получаем имя пользователя из localStorage при загрузке
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                setUserName(user.name || '');
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                setUserName(''); // Устанавливаем пустое имя при ошибке
+            }
+        } else {
+            // Если localStorage пустой, можно попробовать получить имя из URL params
+            const nameParam = params.get('name');
+            setUserName(nameParam || 'Пользователь');
+        }
+    }, [params]);
 
     const mutation = useMutation({
         mutationFn: () => otpVerify(phoneNumber, otp.join('')),
@@ -22,15 +41,24 @@ const VerificationForm = () => {
             router.push('/profile');
         },
         onError: (error) => {
-            setError(`${error}`);
+            setError('Неверный код верификации. Проверьте правильность введенного кода.');
             // Очищаем поля при ошибке
             setOtp(['', '', '', '', '', '']);
             inputRefs.current[0]?.focus();
+            
+            // Добавляем класс для анимации вибрации
+            const otpContainer = document.querySelector('.otp-container');
+            if (otpContainer) {
+                otpContainer.classList.add('shake');
+                setTimeout(() => {
+                    otpContainer.classList.remove('shake');
+                }, 600);
+            }
         }
     });
 
     const resendMutation = useMutation({
-        mutationFn: () => onLogin(phoneNumber, ''), // Используем пустое имя для повторной отправки
+        mutationFn: () => onLogin(phoneNumber, userName || "Повторная отправка"),
         onSuccess: () => {
             setError('');
             // Запускаем обратный отсчет на 60 секунд
@@ -167,28 +195,28 @@ const VerificationForm = () => {
                                 <div className="flex justify-center space-x-3">
                                     {otp.map((digit, index) => (
                                         <input
-  key={index}
-  ref={(el) => {
-    inputRefs.current[index] = el;
-  }}
-  type="text"
-  inputMode="numeric"
-  maxLength={1}
-  value={digit}
-  onChange={(e) => handleOtpChange(index, e.target.value)}
-  onKeyDown={(e) => handleKeyDown(index, e)}
-  onPaste={handlePaste}
-  className={`w-12 h-14 text-center text-xl font-bold bg-gray-800/60 border-2 rounded-2xl focus:outline-none transition-all duration-300 ${
-    error
-      ? 'border-red-500/50 focus:border-red-400 bg-red-500/10'
-      : digit 
-      ? 'border-white/30 focus:border-white/60 bg-white/5'
-      : 'border-gray-700/50 focus:border-gray-500/60 hover:border-gray-600/50'
-  } text-white placeholder-gray-500`}
-  disabled={mutation.isPending}
-  autoComplete="off"
-/>
-
+                                            key={index}
+                                            ref={el => {
+                                                inputRefs.current[index] = el
+                                            }
+                                            }
+                                            type="text"
+                                            inputMode="numeric"
+                                            maxLength={1}
+                                            value={digit}
+                                            onChange={(e) => handleOtpChange(index, e.target.value)}
+                                            onKeyDown={(e) => handleKeyDown(index, e)}
+                                            onPaste={handlePaste}
+                                            className={`w-12 h-14 text-center text-xl font-bold bg-gray-800/60 border-2 rounded-2xl focus:outline-none transition-all duration-300 ${
+                                                error
+                                                    ? 'border-red-500/50 focus:border-red-400 bg-red-500/10'
+                                                    : digit 
+                                                    ? 'border-white/30 focus:border-white/60 bg-white/5'
+                                                    : 'border-gray-700/50 focus:border-gray-500/60 hover:border-gray-600/50'
+                                            } text-white placeholder-gray-500`}
+                                            disabled={mutation.isPending}
+                                            autoComplete="off"
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -249,6 +277,8 @@ const VerificationForm = () => {
                             </div>
                         </div>
                     </div>
+
+                   
                 </div>
             </div>
         </div>
